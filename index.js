@@ -30,7 +30,7 @@ var uvMapCubeToTexture = function(args) {
       return faceVertex;
     });
   }).map(function(faceVertices) {
-    // Convert quad to triangles
+    // Triangulate quad
     return [
       [faceVertices[3], faceVertices[0], faceVertices[2]],
       [faceVertices[0], faceVertices[1], faceVertices[2]]
@@ -45,7 +45,6 @@ var cb = function() {};
 
 var charMaterial = new THREE.MeshBasicMaterial();
 
-// Here be the cubes
 var legGeometry = new THREE.CubeGeometry(4, 12, 4);
 legGeometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, -6, 0));
 var armGeometry = new THREE.CubeGeometry(4, 12, 4);
@@ -60,20 +59,20 @@ var leftArm = new THREE.Mesh(armGeometry, charMaterial);
 var rightArm = new THREE.Mesh(armGeometry, charMaterial);
 var head = new THREE.Mesh(headGeometry, charMaterial);
 
-leftLeg.position.set(0, -6, -2);
-rightLeg.position.set(0, -6, 2);
+head.position.set(0, 10, 0);
 body.position.set(0, 0, 0);
 leftArm.position.set(Math.PI / 32, 4, -6);
 rightArm.position.set(-Math.PI / 32, 4, 6);
-head.position.set(0, 10, 0);
+leftLeg.position.set(0, -6, -2);
+rightLeg.position.set(0, -6, 2);
 
 var character = new THREE.Object3D();
-character.add(leftLeg);
-character.add(rightLeg);
+character.add(head);
 character.add(body);
 character.add(leftArm);
 character.add(rightArm);
-character.add(head);
+character.add(leftLeg);
+character.add(rightLeg);
 
 scene.add(character);
 
