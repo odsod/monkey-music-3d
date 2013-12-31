@@ -1,0 +1,12 @@
+.icon-grass_side {
+  background-image: url(../block.png);
+  background-position: 0px 0px;
+  width: 16px;
+  height: 16px;
+}
+.icon-grass_top {
+  background-image: url(../block.png);
+  background-position: 0px -16px;
+  width: 16px;
+  height: 16px;
+}
