@@ -14,7 +14,7 @@ module.exports = (grunt) ->
         destCSS: 'assets/textures/block/block.css'
     watch:
       scripts:
-        files: 'lib/**/*.js'
+        files: ['lib/**/*.js', 'levels/*.json']
         tasks: ['browserify']
         options:
           livereload: true
