@@ -14,15 +14,15 @@ metrics =
   leg: { width: 4, height: 6, depth: 3 }
   tail: {}
 
-metrics.leg.translateCenterY = -2
-metrics.leg.offsetY = 0
+metrics.leg.translateCenterY = -metrics.leg.height
+metrics.leg.offsetY = -metrics.leg.translateCenterY
 metrics.leg.offsetZ = metrics.body.depth / 2 - metrics.leg.depth / 2
 
 metrics.body.offsetY = metrics.leg.height
 
-metrics.arm.translateCenterY = -4
+metrics.arm.translateCenterY = -(metrics.arm.height - 1.5)
+metrics.arm.offsetY = metrics.body.offsetY + metrics.body.height - metrics.arm.height - metrics.arm.translateCenterY
 metrics.arm.offsetZ = metrics.body.depth / 2 + metrics.arm.depth / 2
-metrics.arm.offsetY = metrics.body.offsetY + metrics.body.height - metrics.arm.height
 
 metrics.head.offsetY = metrics.body.offsetY + metrics.body.height
 
@@ -40,8 +40,8 @@ for name, metric of metrics
   geometries[name] = new THREE.CubeGeometry(metric.width, metric.height, metric.depth)
   geometries[name].applyMatrix(new THREE.Matrix4().makeTranslation(0, metric.height / 2, 0))
 
-#geometries.leg.applyMatrix(new THREE.Matrix4().makeTranslation(0, metrics.leg.translateCenterY, 0))
-#geometries.arm.applyMatrix(new THREE.Matrix4().makeTranslation(0, metrics.arm.translateCenterY, 0))
+geometries.leg.applyMatrix(new THREE.Matrix4().makeTranslation(0, metrics.leg.translateCenterY, 0))
+geometries.arm.applyMatrix(new THREE.Matrix4().makeTranslation(0, metrics.arm.translateCenterY, 0))
 
 #   _2
 # 3| |
@@ -142,18 +142,22 @@ class Monkey extends THREE.Object3D
     @add(@rightLeg)
     @add(@leftLeg)
 
-    @scale.setLength(1 / metrics.width * 1.20)
+    @scale.setLength(1 / metrics.width * 1.10)
 
   animate: (time, delta) ->
-    #@rightArm.rotation.z = 1.0 * Math.cos(0.6662 * time * 20 + Math.PI);
-    #@rightArm.rotation.x = 0.5 * (Math.cos(0.2812 * time * 20) - 1);
+    @rightArm.rotation.z = Math.PI / 2
+    @leftArm.rotation.z = Math.PI / 2
+    @rightArm.rotation.z = 1.0 * Math.cos(0.6662 * time * 20 + Math.PI);
+    @rightArm.rotation.x = 0.5 * (Math.cos(0.2812 * time * 20) - 1);
 
-    #@leftArm.rotation.z = 1.0 * Math.cos(0.6662 * time * 20);
-    #@leftArm.rotation.x = 0.5 * (Math.cos(0.2312 * time * 20) + 1);
+    @leftArm.rotation.z = 1.0 * Math.cos(0.6662 * time * 20);
+    @leftArm.rotation.x = 0.5 * (Math.cos(0.2312 * time * 20) + 1);
 
-    #@rightLeg.rotation.z = 1.0 * Math.cos(0.6662 * time * 20);
-    #@leftLeg.rotation.z = 1.0 * Math.cos(0.6662 * time * 20 + Math.PI);
+    @rightLeg.rotation.z = 1.0 * Math.cos(0.6662 * time * 20);
+    @leftLeg.rotation.z = 1.0 * Math.cos(0.6662 * time * 20 + Math.PI);
 
-    @rotation.y = time - Math.PI;
+    @lookAt(new THREE.Vector3(-10, 0, 0))
+
+    #@rotation.y = time - Math.PI;
 
 exports.Monkey = Monkey

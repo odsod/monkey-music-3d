@@ -25,7 +25,7 @@ class MonkeyMusicReplay
     #@camera.position.set(1, 3, 2)
     #@camera.lookAt(new THREE.Vector3(1, 0, 0))
     @camera.position.set(1, 1, 1)
-    @camera.position.setLength(5)
+    @camera.position.setLength(10)
     @camera.lookAt(new THREE.Vector3(0, 0, 0))
     @scene.add(new THREE.AxisHelper(300))
     terrain = Terrain.fromLayout(@steps[0].layout, @legend.terrain)
@@ -65,7 +65,7 @@ class MonkeyMusicReplay
     currTime = @clock.getElapsedTime()
     currStepNum = Math.floor(currTime / STEP_TIME)
     console.log(currStepNum)
-    #@initStep(currStepNum) if currStepNum > @stepNum and currStepNum < @steps.length
+    @initStep(currStepNum) if currStepNum > @stepNum and currStepNum < @steps.length
     for id, entity of @entitiesOnScene
       entity.animate(currTime, currDelta)
     @renderer.render(@scene, @camera)
