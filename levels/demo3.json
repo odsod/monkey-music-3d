@@ -1,0 +1,22 @@
+{
+  "legend": {
+    "terrain": {
+      "#": "block"
+    },
+    "items": {
+      "l": "record",
+      "t": "goldrecord",
+      "T": "platinumrecord"
+    },
+    "monkeys": {
+      "1": "monkey"
+    }
+  },
+  "layout": [
+    "    l",
+    "##  #",
+    "    t",
+    " ####",
+    "    T"
+  ]
+}

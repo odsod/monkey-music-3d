@@ -3,10 +3,12 @@ module.exports = (grunt) ->
   @initConfig
     browserify:
       dev:
-        src: ['lib/index.js']
+        src: ['lib/index.coffee']
         dest: 'build/index.js'
         options:
           alias: ['lib/shim/three.js:three']
+          transform: ['coffeeify']
+          debug: true
     sprite:
       block:
         src: 'assets/textures/block/*.png'
@@ -14,8 +16,8 @@ module.exports = (grunt) ->
         destCSS: 'assets/textures/block/block.css'
     watch:
       scripts:
-        files: ['lib/**/*.js', 'levels/*.json']
-        tasks: ['browserify']
+        files: ['lib/**/*.coffee', 'lib/**/*.js', 'levels/*.json']
+        tasks: ['browserify:dev']
         options:
           livereload: true
 
