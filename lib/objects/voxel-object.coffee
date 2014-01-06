@@ -36,9 +36,11 @@ class VoxelObject extends THREE.Object3D
           textureWidth: image.width,
           textureHeight: image.height
         mesh = new THREE.Mesh(voxel, material)
-        mesh.position.set(x - 7.5, y, 0)
+        mesh.position.set(x - Math.floor(image.width / 2), y, 0)
         THREE.GeometryUtils.merge(geometry, mesh)
 
-    new VoxelObject(geometry, material)
+    object = new VoxelObject(geometry, material)
+    object.scale.setLength(1 / image.width * 1.70)
+    object
 
 exports.VoxelObject = VoxelObject
