@@ -1,5 +1,6 @@
 THREE = require('three')
 Terrain = require('./objects/terrain.coffee').Terrain
+Monkey = require('./objects/monkey.coffee').Monkey
 items = require('./objects/items.coffee')
 
 assets = require('./assets.coffee')
@@ -21,8 +22,11 @@ class MonkeyMusicReplay
     @renderer.setClearColor(0xffffff)
     @renderer.setSize(window.innerWidth, window.innerHeight)
     @renderer.sortObjects = false
-    @camera.position.set(1, 3, 2)
-    @camera.lookAt(new THREE.Vector3(1, 0, 0))
+    #@camera.position.set(1, 3, 2)
+    #@camera.lookAt(new THREE.Vector3(1, 0, 0))
+    @camera.position.set(1, 1, 1)
+    @camera.position.setLength(5)
+    @camera.lookAt(new THREE.Vector3(0, 0, 0))
     @scene.add(new THREE.AxisHelper(300))
     terrain = Terrain.fromLayout(@steps[0].layout, @legend.terrain)
     @scene.add(terrain)
@@ -37,7 +41,10 @@ class MonkeyMusicReplay
       entityOnScene = @entitiesOnScene[id]
 
       if not entityOnScene?
-        Entity = items.constructorForType('record')
+        Entity = 
+          if (id == '1')
+            Monkey 
+          else items.constructorForType('record')
         entityOnScene = @entitiesOnScene[id] = new Entity(id: id, entities: @entitiesOnScene, stepTime: @STEP_TIME)
         @scene.add(entityOnScene)
 
@@ -58,7 +65,7 @@ class MonkeyMusicReplay
     currTime = @clock.getElapsedTime()
     currStepNum = Math.floor(currTime / STEP_TIME)
     console.log(currStepNum)
-    @initStep(currStepNum) if currStepNum > @stepNum and currStepNum < @steps.length
+    #@initStep(currStepNum) if currStepNum > @stepNum and currStepNum < @steps.length
     for id, entity of @entitiesOnScene
       entity.animate(currTime, currDelta)
     @renderer.render(@scene, @camera)
