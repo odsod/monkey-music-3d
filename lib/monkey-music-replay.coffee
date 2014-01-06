@@ -32,8 +32,8 @@ class MonkeyMusicReplay
     @scene.add(new THREE.AxisHelper(300))
     terrain = Terrain.fromLayout(@steps[0].layout, @legend.terrain)
     @scene.add(terrain)
-    assets.items.record.position.set(1, 0, 1)
-    @scene.add(assets.items.record)
+    assets.items.goldrecord.position.set(1, 0, 1)
+    @scene.add(assets.items.goldrecord)
 
   initStep: (@stepNum) =>
     {layout, actions} = @steps[@stepNum]

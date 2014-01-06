@@ -1,5 +1,5 @@
 THREE = require('three')
-assets = require('../assets')
+assets = require('../assets.coffee')
 uvMapForCubeTexture = require('../util.coffee').uvMapForCubeTexture
 
 blockMaterial = new THREE.MeshBasicMaterial(map: assets.textures.blocksmall)
