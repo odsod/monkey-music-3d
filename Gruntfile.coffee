@@ -6,7 +6,7 @@ module.exports = (grunt) ->
         src: ['lib/index.coffee']
         dest: 'build/index.js'
         options:
-          alias: ['lib/shim/three.js:three']
+          alias: ['lib/shim/three.js:three', 'lib/shim/tween.js:tween']
           transform: ['coffeeify']
           debug: true
     sprite:

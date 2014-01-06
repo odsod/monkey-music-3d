@@ -1,4 +1,5 @@
 THREE = require('three')
+Tween = require('tween').Tween
 uvMapForCubeTexture = require('../util.coffee').uvMapForCubeTexture
 assets = require('../assets.coffee')
 
@@ -149,15 +150,23 @@ class Monkey extends THREE.Object3D
     @leftArm.rotation.z = Math.PI / 2
     @rightArm.rotation.z = 1.0 * Math.cos(0.6662 * time * 20 + Math.PI);
     @rightArm.rotation.x = 0.5 * (Math.cos(0.2812 * time * 20) - 1);
-
     @leftArm.rotation.z = 1.0 * Math.cos(0.6662 * time * 20);
     @leftArm.rotation.x = 0.5 * (Math.cos(0.2312 * time * 20) + 1);
-
     @rightLeg.rotation.z = 1.0 * Math.cos(0.6662 * time * 20);
     @leftLeg.rotation.z = 1.0 * Math.cos(0.6662 * time * 20 + Math.PI);
-
-    @lookAt(new THREE.Vector3(-10, 0, 0))
-
     #@rotation.y = time - Math.PI;
+
+  performAction: (action) =>
+    if action.type is 'move'
+      new Tween(@position).to({x: action.to.x, z: action.to.y}, 1000).start()
+    else if action.type is 'face'
+      if action.direction is 'north'
+        @lookAt(new THREE.Vector3(10, 0, 0))
+      else if action.direction is 'south'
+        @lookAt(new THREE.Vector3(-10, 0, 0))
+      else if action.direction is 'west'
+        @lookAt(new THREE.Vector3(0, 0, -10))
+      else if action.direction is 'east'
+        @lookAt(new THREE.Vector3(0, 0, 10))
 
 exports.Monkey = Monkey

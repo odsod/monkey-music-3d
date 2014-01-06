@@ -5,7 +5,7 @@ items = require('./objects/items.coffee')
 
 assets = require('./assets.coffee')
 
-STEP_TIME = 2
+STEP_TIME = 1
 
 class MonkeyMusicReplay
 
@@ -32,7 +32,6 @@ class MonkeyMusicReplay
     @scene.add(terrain)
 
   initStep: (@stepNum) =>
-    console.log('init step', @stepNum)
     {layout, actions} = @steps[@stepNum]
     entitiesUpdated = {}
     layout.forEach (row, z) => row.forEach (id, x) => if id of @legend.entities
@@ -56,15 +55,13 @@ class MonkeyMusicReplay
         @scene.remove(entity)
         delete @entitiesOnScene[id]
 
-    entity.resetActions() for entity in @entitiesOnScene
-    for id, action in actions
-      @entitiesOnScene[id].performAction(action)
+    #entity.resetActions() for entity in @entitiesOnScene
+    @entitiesOnScene[action.id].performAction(action) for action in actions
 
   updateAndRender: =>
     currDelta = @clock.getDelta()
     currTime = @clock.getElapsedTime()
     currStepNum = Math.floor(currTime / STEP_TIME)
-    console.log(currStepNum)
     @initStep(currStepNum) if currStepNum > @stepNum and currStepNum < @steps.length
     for id, entity of @entitiesOnScene
       entity.animate(currTime, currDelta)
