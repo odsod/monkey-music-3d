@@ -1,6 +1,8 @@
 THREE = require('three')
 Terrain = require('./objects/terrain.coffee').Terrain
 
+assets = require('./assets.coffee')
+
 class MonkeyMusicReplay
 
   #@ENTITY_CONSTRUCTORS =
@@ -25,11 +27,13 @@ class MonkeyMusicReplay
     @renderer.setSize(window.innerWidth, window.innerHeight)
     @renderer.sortObjects = false
     @camera.position.set(1, 1, 1)
-    @camera.position.setLength(5)
+    @camera.position.setLength(20)
     @camera.lookAt(new THREE.Vector3(0, 0, 0))
     @scene.add(new THREE.AxisHelper(300))
     terrain = Terrain.fromLayout(@steps[0].layout, @legend.terrain)
     @scene.add(terrain)
+    assets.items.record.position.set(1, 0, 1)
+    @scene.add(assets.items.record)
 
   initStep: (@stepNum) =>
     {layout, actions} = @steps[@stepNum]
