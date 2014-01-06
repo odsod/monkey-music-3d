@@ -8,7 +8,7 @@ replay = new MonkeyMusicReplay(replayFile)
 
 renderLoop = ->
   replay.updateAndRender()
-  requestAnimationFrame(renderLoop)
+  requestAnimationFrame(renderLoop, replay.renderer.domElement)
 
 assets.whenLoaded ->
   replay.init()
