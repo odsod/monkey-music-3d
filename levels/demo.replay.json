@@ -1,0 +1,23 @@
+{
+  "legend": {
+    "terrain": {
+      "#": "block"
+    },
+    "entities": {
+      "1": "monkey",
+      "2": "record",
+      "3": "record",
+      "4": "record"
+    }
+  },
+  "steps": [{
+    "layout": [
+      ["#", "3", "#"],
+      ["1", " ", "2"],
+      ["#", "4", "#"]
+    ],
+    "actions": [
+    ]
+  },{
+  }]
+}
