@@ -46,9 +46,9 @@ geometries.arm.applyMatrix(new THREE.Matrix4().makeTranslation(0, metrics.arm.tr
 
 #   _2
 # 3| |
-#   |1
-#   |__
-#     0 */
+#    |1
+#    |__
+#      0
 geometries.tail = [{
   geometry: new THREE.CubeGeometry(4, 1, 1)
   position: new THREE.Vector3(0, 0, 0)
@@ -158,15 +158,13 @@ class Monkey extends THREE.Object3D
 
   performAction: (action) =>
     if action.type is 'move'
-      new Tween(@position).to({x: action.to.x, z: action.to.y}, 1000).start()
+      new Tween(@position).to({x: action.to.x, z: action.to.y}, 750).start()
     else if action.type is 'face'
-      if action.direction is 'north'
-        @lookAt(new THREE.Vector3(10, 0, 0))
-      else if action.direction is 'south'
-        @lookAt(new THREE.Vector3(-10, 0, 0))
-      else if action.direction is 'west'
-        @lookAt(new THREE.Vector3(0, 0, -10))
-      else if action.direction is 'east'
-        @lookAt(new THREE.Vector3(0, 0, 10))
+      rotation = switch action.direction
+        when 'north' then 1 / 2 * Math.PI
+        when 'south' then 3 / 2 * Math.PI
+        when 'west' then Math.PI
+        when 'east' then 0
+      new Tween(@rotation).to({y: rotation }, 250).start()
 
 exports.Monkey = Monkey

@@ -5,7 +5,7 @@ items = require('./objects/items.coffee')
 
 assets = require('./assets.coffee')
 
-STEP_TIME = 1
+STEP_TIME = 0.750
 
 class MonkeyMusicReplay
 
