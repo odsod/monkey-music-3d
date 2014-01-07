@@ -55,7 +55,8 @@ class MonkeyMusicReplay
         @scene.remove(entity)
         delete @entitiesOnScene[id]
 
-    #entity.resetActions() for entity in @entitiesOnScene
+    for id, entity of @entitiesOnScene
+      entity.resetActions()
     @entitiesOnScene[action.id].performAction(action) for action in actions
 
   updateAndRender: =>
