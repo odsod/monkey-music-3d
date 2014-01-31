@@ -15,4 +15,5 @@ renderLoop = ->
 assets.whenLoaded ->
   replay.init()
   document.body.appendChild(replay.renderer.domElement)
-  renderLoop()
+
+  window.addEventListener 'keyup', -> renderLoop()
