@@ -19,36 +19,45 @@ class MonkeyMusicReplay
 
   init: =>
     @initStep(0)
-    @renderer.setClearColor(0xffffff)
+    @renderer.setClearColor(0x0f1113)
     @renderer.setSize(window.innerWidth, window.innerHeight)
     @renderer.sortObjects = false
     #@camera.position.set(1, 3, 2)
     #@camera.lookAt(new THREE.Vector3(1, 0, 0))
-    @camera.position.set(1, 1, 1)
-    @camera.position.setLength(10)
-    @camera.lookAt(new THREE.Vector3(0, 0, 0))
-    @scene.add(new THREE.AxisHelper(300))
+    @camera.position.set(4.5, 5, 7 + 1)
+    #@camera.position.setLength(100)
+    @camera.lookAt(new THREE.Vector3(4.5, 0, 3.5))
+    #@scene.add(new THREE.AxisHelper(300))
+    plane = new THREE.Mesh(new THREE.PlaneGeometry(10, 7), new THREE.MeshBasicMaterial({ color: 0x987654 }))
+    plane.rotation.x = - Math.PI / 2
+    plane.position.x = 4.5
+    plane.position.z = 3
+    @scene.add(plane)
     terrain = Terrain.fromLayout(@steps[0].layout, @legend.terrain)
     @scene.add(terrain)
 
   initStep: (@stepNum) =>
     {layout, actions} = @steps[@stepNum]
     entitiesUpdated = {}
-    layout.forEach (row, z) => row.forEach (id, x) => if id of @legend.entities
-      # Mark entity as updated
-      entitiesUpdated[id] = true
-      entityOnScene = @entitiesOnScene[id]
+    layout.forEach (row, z) => row.forEach (id, x) =>
+      if id of @legend.entities
+        # Mark entity as updated
+        entitiesUpdated[id] = true
+        entityOnScene = @entitiesOnScene[id]
 
-      if not entityOnScene?
-        Entity = 
-          if (id == '1')
-            Monkey 
-          else items.constructorForType('record')
-        entityOnScene = @entitiesOnScene[id] = new Entity(id: id, entities: @entitiesOnScene, stepTime: @STEP_TIME)
-        @scene.add(entityOnScene)
+        if not entityOnScene?
+          Entity = 
+            if (id == '1' or id == '2')
+              Monkey
+            else if (id in ['5', '6']) then items.constructorForType('goldrecord')
+            else if (id in ['7', '8', '9']) then items.constructorForType('platinumrecord')
+            else items.constructorForType('record')
+          entityOnScene = @entitiesOnScene[id] = new Entity(id: id, entities: @entitiesOnScene, stepTime: @STEP_TIME)
+          console.log(id, @legend.entities[id], entityOnScene)
+          @scene.add(entityOnScene)
 
-      if (entityOnScene.position.x != x) or (entityOnScene.position.z != z)
-        entityOnScene.position.set(x, 0, z)
+        if (entityOnScene.position.x != x) or (entityOnScene.position.z != z)
+          entityOnScene.position.set(x, 0, z)
 
     for id, entity of @entitiesOnScene
       if not entitiesUpdated[id]?
