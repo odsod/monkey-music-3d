@@ -11,7 +11,8 @@ class MonkeyMusicReplay
 
   constructor: (options) ->
     {@steps, @legend} = options
-    @camera = new THREE.PerspectiveCamera(70, window.innerWidth/ window.innerHeight, 0.1, 1500)
+    aspectRatio = window.innerWidth/ window.innerHeight
+    @camera = new THREE.PerspectiveCamera(70, aspectRatio, 0.1, 1500)
     @clock = new THREE.Clock()
     @renderer = new THREE.WebGLRenderer()
     @scene = new THREE.Scene()
@@ -23,17 +24,18 @@ class MonkeyMusicReplay
     @renderer.setClearColor(0x0f1113)
     @renderer.setSize(window.innerWidth, window.innerHeight)
     @renderer.sortObjects = false
-    #@camera.position.set(1, 3, 2)
-    #@camera.lookAt(new THREE.Vector3(1, 0, 0))
     @camera.position.set(4.5, 5, 7 + 1)
-    #@camera.position.setLength(100)
     @camera.lookAt(new THREE.Vector3(4.5, 0, 3.5))
-    #@scene.add(new THREE.AxisHelper(300))
-    plane = new THREE.Mesh(new THREE.PlaneGeometry(10, 7), new THREE.MeshBasicMaterial({ color: 0x987654 }))
-    plane.rotation.x = - Math.PI / 2
-    plane.position.x = 4.5
-    plane.position.z = 3
-    @scene.add(plane)
+
+    # Floor
+    floorGeometry = new THREE.PlaneGeometry(10, 7)
+    floorMaterial = new THREE.MeshBasicMaterial({ color: 0x987654 })
+    floor = new THREE.Mesh(floorGeometry, floorMaterial)
+    floor.rotation.x = - Math.PI / 2
+    floor.position.x = 4.5
+    floor.position.z = 3
+    @scene.add(floor)
+
     terrain = Terrain.fromLayout(@steps[0].layout, @legend.terrain)
     @scene.add(terrain)
 
