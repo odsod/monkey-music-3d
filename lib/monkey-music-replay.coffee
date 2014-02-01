@@ -49,17 +49,14 @@ class MonkeyMusicReplay
         entityOnScene = @entitiesOnScene[id]
 
         if not entityOnScene?
-          Entity =
-            if (id == '1' or id == '2')
-              Monkey
-            else if (id in ['5', '6'])
-              items.constructorForType('goldrecord')
-            else if (id in ['7', '8', '9'])
-              items.constructorForType('platinumrecord')
-            else items.constructorForType('record')
           entityOnScene = @entitiesOnScene[id] =
-            new Entity(id: id, entities: @entitiesOnScene, stepTime: @STEP_TIME)
-          console.log(id, @legend.entities[id], entityOnScene)
+            if (id == '1' or id == '2')
+              new Monkey(id: id, entities: @entitiesOnScene, stepTime: @STEP_TIME)
+            else if (id in ['5', '6'])
+              items.voxelObjectFor('goldrecord')
+            else if (id in ['7', '8', '9'])
+              items.voxelObjectFor('platinumrecord')
+            else items.voxelObjectFor('record')
           @scene.add(entityOnScene)
 
         if (entityOnScene.position.x != x) or (entityOnScene.position.z != z)

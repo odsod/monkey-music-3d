@@ -20,7 +20,7 @@ textureFiles = [
   'blocksmall.png'
 ]
 
-itemFiles = [
+imageFiles = [
   'platinumrecord.png'
   'goldrecord.png'
   'record.png'
@@ -40,16 +40,15 @@ exports.textures = textureFiles
     textures
   , {}
 
-exports.items = itemFiles
+exports.images = imageFiles
   .map((src) -> "assets/items/#{src}")
-  .reduce (items, src) ->
+  .reduce (images, src) ->
     assetsToLoad.increment()
     image = new Image()
-    image.addEventListener 'load', () ->
-      items[filename(src)] = VoxelObject.fromImage(image)
-      assetsToLoad.notifyLoaded()
+    image.addEventListener 'load', -> assetsToLoad.notifyLoaded()
     image.src = src
-    items
+    images[filename(src)] = image
+    images
   , {}
 
 exports.whenLoaded = assetsToLoad.whenLoaded
