@@ -78,7 +78,8 @@ class MonkeyMusicReplay
     currDelta = @clock.getDelta()
     currTime = @clock.getElapsedTime()
     currStepNum = Math.floor(currTime / STEP_TIME)
-    @initStep(currStepNum) if currStepNum > @stepNum and currStepNum < @steps.length
+    if currStepNum > @stepNum and currStepNum < @steps.length
+      @initStep(currStepNum)
     for id, entity of @entitiesOnScene
       entity.animate(currTime, currDelta)
     @renderer.render(@scene, @camera)
