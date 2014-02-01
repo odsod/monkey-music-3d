@@ -16,6 +16,7 @@ class MonkeyMusicReplay
     @renderer = new THREE.WebGLRenderer()
     @scene = new THREE.Scene()
     @entitiesOnScene = {}
+    @init()
 
   init: =>
     @initStep(0)
