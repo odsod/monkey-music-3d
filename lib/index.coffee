@@ -6,7 +6,7 @@ requestAnimationFrame = require('./shim/request-animation-frame.js')
 replayFile = require('../levels/testlevel.replay.json')
 
 assets.whenLoaded ->
-  replay = new MonkeyMusicReplay(replayFile)
+  replay = new MonkeyMusicReplay(replayFile, stepTime: 1)
   document.body.appendChild(replay.renderer.domElement)
 
   renderLoop = ->

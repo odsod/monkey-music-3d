@@ -4,15 +4,17 @@ assets = require('./assets.coffee')
 objects = require('./objects/items.coffee')
 Engine = require('monkey-music-engine')
 
-STEP_TIME = 0.750
+STEP_TIME = 1.750
 
 class MonkeyMusicReplay
 
-  constructor: (replay) ->
+  constructor: (replay, options) ->
+    {@stepTime} = options
     @engine = new Engine(replay.level)
     @steps = replay.steps
 
     @objectsOnScene = {}
+    @tick = 0
     @stepNum = -1
 
     @clock = new THREE.Clock()
@@ -65,7 +67,11 @@ class MonkeyMusicReplay
     currDelta = @clock.getDelta()
     currTime = @clock.getElapsedTime()
 
-    currStepNum = Math.floor(currTime / STEP_TIME)
+    currTick = Math.floor(currTime / @stepTime)
+    if currTick > @tick
+      @tick = currTick
+
+    currStepNum = Math.floor(currTime / @stepTime)
     if currStepNum > @stepNum and currStepNum < @steps.length
       step = @steps[currStepNum]
       @engine.step(step)
@@ -73,6 +79,9 @@ class MonkeyMusicReplay
       @addNewObjectsToScene()
       @updateObjectPositions()
       @stepNum = currStepNum
+
+    for id, object of @objectsOnScene
+      object.animate(currDelta, currTime) if object.animate?
 
     @renderer.render(@scene, @camera)
 
