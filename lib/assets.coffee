@@ -10,22 +10,20 @@ notifyLoaded = ->
     callbacks = []
 
 imageFiles = [
-  'monkey.png'
-  'blocksmall.png'
-  'platinumrecord.png'
-  'goldrecord.png'
-  'record.png'
+  'assets/images/monkey.png'
+  'assets/images/blocksmall.png'
+  'assets/images/platinumrecord.png'
+  'assets/images/goldrecord.png'
+  'assets/images/record.png'
 ]
 
 filename = (src) -> src.split('/').pop().split('.')[0]
 
-exports.images = imageFiles
-  .map((src) -> "assets/images/#{src}")
-  .reduce (images, src) ->
-    needsToLoad++
-    image = new Image()
-    image.addEventListener('load', notifyLoaded)
-    image.src = src
-    images[filename(src)] = image
-    images
-  , {}
+exports.images = imageFiles.reduce (images, src) ->
+  needsToLoad++
+  image = new Image()
+  image.addEventListener('load', notifyLoaded)
+  image.src = src
+  images[filename(src)] = image
+  images
+, {}
