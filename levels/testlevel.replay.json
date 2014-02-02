@@ -1,0 +1,44 @@
+{
+  "level": {
+    "players": ["1"],
+    "legend": {
+      "#": "Wall",
+      "r": "Record",
+      "g": "GoldRecord",
+      "p": "PlatinumRecord",
+      "U": "User",
+      " ": "Empty"
+    },
+    "layout": [
+      "#g#",
+      "U1p",
+      "#r#"
+    ],
+    "config": {
+      "pickUpLimit": 3,
+      "stepLimit": 20
+    }
+  },
+  "moves": [{
+    "player": "1",
+    "direction": "N"
+  }, {
+    "player": "1",
+    "direction": "S"
+  }, {
+    "player": "1",
+    "direction": "S"
+  }, {
+    "player": "1",
+    "direction": "N"
+  }, {
+    "player": "1",
+    "direction": "E"
+  }, {
+    "player": "1",
+    "direction": "W"
+  }, {
+    "player": "1",
+    "direction": "W"
+  }]
+}

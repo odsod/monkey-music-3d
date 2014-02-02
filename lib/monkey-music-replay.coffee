@@ -3,11 +3,17 @@ items = require('./objects/items.coffee')
 
 assets = require('./assets.coffee')
 
+Engine = require('monkey-music-engine')
+replay = require('../levels/testlevel.replay.json')
+
+console.log(replay)
+
 STEP_TIME = 0.750
 
 class MonkeyMusicReplay
 
   constructor: (options) ->
+    @level = replay.level
     {@steps, @legend} = options
     @objectsOnScene = {}
 
@@ -73,7 +79,6 @@ class MonkeyMusicReplay
         delete @objectsOnScene[id]
 
     for id, entity of @objectsOnScene
-      console.log(id, entity)
       entity.resetActions()
     @objectsOnScene[action.id].performAction(action) for action in actions
 
