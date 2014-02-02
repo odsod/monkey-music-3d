@@ -20,6 +20,7 @@ blockGeometry.faceVertexUvs[0] = uvMapForCubeTexture
   bottom: { x: 0, y: 0, width: 8, height: 8 }
   textureWidth: 8
   textureHeight: 16
+
 blockMesh = new THREE.Mesh(blockGeometry, blockMaterial)
 
 class Terrain extends THREE.Object3D

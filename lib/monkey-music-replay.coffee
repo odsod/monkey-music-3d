@@ -44,19 +44,17 @@ class MonkeyMusicReplay
     entitiesUpdated = {}
     layout.forEach (row, z) => row.forEach (id, x) =>
       if id of @legend.entities
+
         # Mark entity as updated
         entitiesUpdated[id] = true
         entityOnScene = @entitiesOnScene[id]
 
         if not entityOnScene?
           entityOnScene = @entitiesOnScene[id] =
-            if (id == '1' or id == '2')
-              new Monkey(id: id, entities: @entitiesOnScene, stepTime: @STEP_TIME)
-            else if (id in ['5', '6'])
-              items.voxelObjectFor('goldrecord')
-            else if (id in ['7', '8', '9'])
-              items.voxelObjectFor('platinumrecord')
-            else items.voxelObjectFor('record')
+            items.voxelObjectFor @legend.entities[id],
+              id: id
+              entities: @entitiesOnScene
+              stepTime: @STEP_TIME
           @scene.add(entityOnScene)
 
         if (entityOnScene.position.x != x) or (entityOnScene.position.z != z)
