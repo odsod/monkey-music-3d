@@ -2,7 +2,14 @@ THREE = require('three')
 assets = require('../assets.coffee')
 uvMapForCubeTexture = require('../util.coffee').uvMapForCubeTexture
 
-blockMaterial = new THREE.MeshBasicMaterial(map: assets.textures.blocksmall)
+textures =
+  blocksmall: new THREE.Texture(assets.images.blocksmall)
+
+for name, texture of textures
+  texture.magFilter = THREE.NearestFilter
+  texture.needsUpdate = true
+
+blockMaterial = new THREE.MeshBasicMaterial(map: textures.blocksmall)
 blockGeometry = new THREE.CubeGeometry(1, 0.75, 1)
 blockGeometry.faceVertexUvs[0] = uvMapForCubeTexture
   right:  { x: 0, y: 8, width: 8, height: 8 }

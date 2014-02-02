@@ -3,8 +3,15 @@ Tween = require('tween').Tween
 uvMapForCubeTexture = require('../util.coffee').uvMapForCubeTexture
 assets = require('../assets.coffee')
 
+textures =
+  monkey: new THREE.Texture(assets.images.monkey)
+
+for name, texture of textures
+  texture.magFilter = THREE.NearestFilter
+  texture.needsUpdate = true
+
 materials =
-  monkey: new THREE.MeshBasicMaterial(map: assets.textures.monkey)
+  monkey: new THREE.MeshBasicMaterial(map: textures.monkey)
   ear: new THREE.MeshBasicMaterial(color: 0xd1be7c)
 
 metrics =
