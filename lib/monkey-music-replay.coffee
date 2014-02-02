@@ -1,5 +1,6 @@
 THREE = require('three')
-items = require('./objects/items.coffee')
+
+objects = require('./objects/items.coffee')
 
 assets = require('./assets.coffee')
 
@@ -13,7 +14,8 @@ STEP_TIME = 0.750
 class MonkeyMusicReplay
 
   constructor: (options) ->
-    @level = replay.level
+    @replay = replay
+    @engine = new Engine(replay.level)
     {@steps, @legend} = options
     @objectsOnScene = {}
 
@@ -27,72 +29,57 @@ class MonkeyMusicReplay
     @renderer.sortObjects = false
 
     # Floor
-    height = options.steps[0].layout.length
-    width = options.steps[0].layout[0].length
-    floorGeometry = new THREE.PlaneGeometry(width, height)
-    floorMaterial = new THREE.MeshBasicMaterial({ color: 0x987654 })
-    floor = new THREE.Mesh(floorGeometry, floorMaterial)
-    floor.rotation.x = - Math.PI / 2
-    floor.position.x = width / 2 - 0.5
-    floor.position.z = height / 2 - 0.5
-    @scene.add(floor)
+    #height = options.steps[0].layout.length
+    #width = options.steps[0].layout[0].length
+    #floorGeometry = new THREE.PlaneGeometry(width, height)
+    #floorMaterial = new THREE.MeshBasicMaterial({ color: 0x987654 })
+    #floor = new THREE.Mesh(floorGeometry, floorMaterial)
+    #floor.rotation.x = - Math.PI / 2
+    #floor.position.x = width / 2 - 0.5
+    #floor.position.z = height / 2 - 0.5
+    #@scene.add(floor)
 
     # Camera
     aspectRatio = window.innerWidth/ window.innerHeight
     @camera = new THREE.PerspectiveCamera(70, aspectRatio, 0.1, 1500)
-    @camera.position.set(width / 2 - 0.5, 5, height - 0.5 + height * 0.75)
-    @camera.lookAt(new THREE.Vector3(width / 2 - 0.5, 0, height / 2 - 0.5))
+    @camera.position.set(1, 1, 1)
+    @camera.position.setLength(10)
+    @camera.lookAt(new THREE.Vector3(0, 0, 0))
 
-    @initStep(0)
+    @cleanRemovedObjectsFromScene()
+    @addNewObjectsToScene()
+    @updateObjectPositions()
 
-  shouldBeOnScene: (thing) -> switch thing
-    when 'empty' then no
-    else yes
+  addNewObjectsToScene: ->
+    for row, y in @engine.ids
+      for id, x in row
+        unless id of @objectsOnScene
+          objectType = @engine.idLookup[id]
+          if objects.canCreate(objectType)
+            object = objects.create(objectType)
+            @scene.add(object)
+            @objectsOnScene[id] = object
 
-  initStep: (@stepNum) =>
-    {layout, actions} = @steps[@stepNum]
-
-    entitiesUpdated = {}
-
-    layout.forEach (row, z) => row.forEach (id, x) =>
-      entity = @legend[id]
-      if entity? and @shouldBeOnScene(entity)
-
-        # Mark entity as updated
-        entitiesUpdated[id] = true
-        entityOnScene = @objectsOnScene[id]
-
-        if not entityOnScene?
-          entityOnScene = @objectsOnScene[id] =
-            items.voxelObjectFor entity,
-              id: id
-              entities: @objectsOnScene
-              stepTime: STEP_TIME
-          @scene.add(entityOnScene)
-
-        if (entityOnScene.position.x != x) or (entityOnScene.position.z != z)
-          entityOnScene.position.set(x, 0, z)
-
-    for id, entity of @objectsOnScene
-      if not entitiesUpdated[id]?
-        @scene.remove(entity)
+  cleanRemovedObjectsFromScene: ->
+    onScene = {}
+    for row in @engine.ids
+      for id in row
+        onScene[id] = true
+    for id, object of @objectsOnScene
+      if not onScene[id]
         delete @objectsOnScene[id]
+        @scene.remove(object)
 
-    for id, entity of @objectsOnScene
-      entity.resetActions()
-    @objectsOnScene[action.id].performAction(action) for action in actions
+  updateObjectPositions: ->
+    for row, y in @engine.ids
+      for id, x in row
+        if id of @objectsOnScene
+          @objectsOnScene[id].position.set(x, 0, y)
 
   updateAndRender: =>
     currDelta = @clock.getDelta()
     currTime = @clock.getElapsedTime()
     currStepNum = Math.floor(currTime / STEP_TIME)
-
-    if currStepNum > @stepNum and currStepNum < @steps.length
-      @initStep(currStepNum)
-
-    for id, entity of @objectsOnScene
-      entity.animate(currTime, currDelta)
-
     @renderer.render(@scene, @camera)
 
 exports.MonkeyMusicReplay = MonkeyMusicReplay
