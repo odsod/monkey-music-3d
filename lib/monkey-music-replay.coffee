@@ -94,14 +94,20 @@ class MonkeyMusicReplay
 
         # Animate the transition to the next step
         step = @steps[currStepNum]
-        animations = @engine.animationsForStep(step)
+
+        for id, object of @objectsOnScene
+          object.resetAnimations() if object.resetAnimations?
+
+        for animation in @engine.animationsForStep(step)
+          if animation.type is 'turn' or animation.type is 'pickup'
+            @objectsOnScene[animation.id].performAnimation(animation)
 
         # Move to next step
         @engine.step(step)
 
     # Perform ongoing animations
     for id, object of @objectsOnScene
-      object.animate(currDelta, currTime) if object.animate?
+      object.animate(currTime, currDelta) if object.animate?
 
     @renderer.render(@scene, @camera)
 

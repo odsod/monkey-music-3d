@@ -128,6 +128,9 @@ geometries.head.faceVertexUvs[0] = uvMapForCubeTexture
 class Monkey extends THREE.Object3D
   constructor: ->
     super()
+
+    @tweens = []
+
     @parts =
       head:     new THREE.Mesh(geometries.head, materials.monkey)
       leftArm:  new THREE.Mesh(geometries.arm, materials.monkey)
@@ -164,42 +167,43 @@ class Monkey extends THREE.Object3D
     @scale.setLength(1 / metrics.width * 1.10)
 
   animate: (time, delta) ->
-    if @animation is 'running'
+    unless @rightArm.tween?
       @rightArm.rotation.z = Math.PI / 2
-      @leftArm.rotation.z = Math.PI / 2
       @rightArm.rotation.z = 1.0 * Math.cos(0.6662 * time * 20 + Math.PI)
       @rightArm.rotation.x = 0.5 * (Math.cos(0.2812 * time * 20) - 1)
+    unless @leftArm.tween?
+      @leftArm.rotation.z = Math.PI / 2
       @leftArm.rotation.z = 1.0 * Math.cos(0.6662 * time * 20)
       @leftArm.rotation.x = 0.5 * (Math.cos(0.2312 * time * 20) + 1)
-      @rightLeg.rotation.z = 1.0 * Math.cos(0.6662 * time * 20)
-      @leftLeg.rotation.z = 1.0 * Math.cos(0.6662 * time * 20 + Math.PI)
-    else if @animation is 'none'
-      for part in [@rightArm, @leftArm, @rightLeg, @leftLeg]
-        part.animation = new Tween(part.rotation).to({ x: 0, z: 0}, 100).start()
-      @animation = null
+    @rightLeg.rotation.z = 1.0 * Math.cos(0.6662 * time * 20)
+    @leftLeg.rotation.z = 1.0 * Math.cos(0.6662 * time * 20 + Math.PI)
 
-  performAction: (action) => @[action.type](action) if @[action.type]?
+  performAnimation: (animation) => switch animation.type
+    when 'turn' then @turnTo(animation.direction)
+    when 'pickup' then @pickup()
 
-  resetActions: -> @animation = 'none'
+  resetAnimations: =>
+    for name, part of @parts
+      if part.tween?
+        part.tween.stop()
+        delete part.tween
 
-  pickup: (options) =>
-    {target} = options
+  pickup: () =>
     for arm in [@rightArm, @leftArm]
-      arm.animation.stop() if arm.animation
-      new Tween(arm.rotation).to({ z: Math.PI / 2, x: 0 }, 200).start()
+      arm.tween.stop() if arm.tween?
+      arm.tween = new Tween(arm.rotation).to(z: Math.PI / 2, x: 0, 200).start()
 
   move: (options) =>
     @animation = 'running'
     {to: {x, y}} = options
     new Tween(@position).to({x: x, z: y}, 750).start()
 
-  face: (options) =>
-    {direction} = options
+  turnTo: (direction) =>
     rotation = switch direction
-      when 'north' then 1 / 2 * Math.PI
-      when 'south' then 3 / 2 * Math.PI
-      when 'west' then Math.PI
-      when 'east' then 0
-    new Tween(@rotation).to({y: rotation }, 250).start()
+      when 'N' then 1 / 2 * Math.PI
+      when 'S' then 3 / 2 * Math.PI
+      when 'W' then Math.PI
+      when 'E' then 0
+    @tweens.push(new Tween(@rotation).to(y: rotation, 250).start())
 
 exports.Monkey = Monkey
