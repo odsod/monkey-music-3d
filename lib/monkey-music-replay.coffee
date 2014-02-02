@@ -78,16 +78,28 @@ class MonkeyMusicReplay
     currDelta = @clock.getDelta()
     currTime = @clock.getElapsedTime()
 
-    currStepNum = Math.floor(currTime / @stepTime) - 1
+    currStepNum = Math.floor(currTime / @stepTime)
 
-    if currStepNum > @stepNum and currStepNum < @steps.length
-      step = @steps[currStepNum]
-      @engine.step(step)
+    # We have advanced to the next step
+    if currStepNum > @stepNum
+      @stepNum = currStepNum
+
+      # Snap to current state (animations have completed)
       @cleanRemovedObjectsFromScene()
       @addNewObjectsToScene()
       @updateObjectPositions()
-      @stepNum = currStepNum
 
+      # Is there a next step?
+      if currStepNum < @steps.length
+
+        # Animate the transition to the next step
+        step = @steps[currStepNum]
+        animations = @engine.animationsForStep(step)
+
+        # Move to next step
+        @engine.step(step)
+
+    # Perform ongoing animations
     for id, object of @objectsOnScene
       object.animate(currDelta, currTime) if object.animate?
 
