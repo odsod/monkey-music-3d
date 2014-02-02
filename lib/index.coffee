@@ -3,7 +3,7 @@ TWEEN = require('tween')
 MonkeyMusicReplay = require('./monkey-music-replay.coffee').MonkeyMusicReplay
 requestAnimationFrame = require('./shim/request-animation-frame.js')
 
-replayFile = require('../levels/demo2.replay.json')
+replayFile = require('../levels/demo3.replay.json')
 
 assets.whenLoaded ->
   replay = new MonkeyMusicReplay(replayFile)

@@ -36,14 +36,19 @@ class MonkeyMusicReplay
     floor.position.z = 3
     @scene.add(floor)
 
-    terrain = Terrain.fromLayout(@steps[0].layout, @legend.terrain)
-    @scene.add(terrain)
+    #terrain = Terrain.fromLayout(@steps[0].layout, @legend.terrain)
+    #@scene.add(terrain)
+
+  shouldBeOnScene: (thing) -> switch thing
+    when 'empty' then no
+    else yes
 
   initStep: (@stepNum) =>
     {layout, actions} = @steps[@stepNum]
     entitiesUpdated = {}
     layout.forEach (row, z) => row.forEach (id, x) =>
-      if id of @legend.entities
+      entity = @legend[id]
+      if entity? and @shouldBeOnScene(entity)
 
         # Mark entity as updated
         entitiesUpdated[id] = true
@@ -51,7 +56,7 @@ class MonkeyMusicReplay
 
         if not entityOnScene?
           entityOnScene = @entitiesOnScene[id] =
-            items.voxelObjectFor @legend.entities[id],
+            items.voxelObjectFor entity,
               id: id
               entities: @entitiesOnScene
               stepTime: STEP_TIME
@@ -66,6 +71,7 @@ class MonkeyMusicReplay
         delete @entitiesOnScene[id]
 
     for id, entity of @entitiesOnScene
+      console.log(id, entity)
       entity.resetActions()
     @entitiesOnScene[action.id].performAction(action) for action in actions
 

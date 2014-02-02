@@ -11,6 +11,7 @@ for name, texture of textures
 
 blockMaterial = new THREE.MeshBasicMaterial(map: textures.blocksmall)
 blockGeometry = new THREE.CubeGeometry(1, 0.75, 1)
+blockGeometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0.5, 0))
 blockGeometry.faceVertexUvs[0] = uvMapForCubeTexture
   right:  { x: 0, y: 8, width: 8, height: 8 }
   front:  { x: 0, y: 8, width: 8, height: 8 }
@@ -21,25 +22,13 @@ blockGeometry.faceVertexUvs[0] = uvMapForCubeTexture
   textureWidth: 8
   textureHeight: 16
 
-blockMesh = new THREE.Mesh(blockGeometry, blockMaterial)
-
-class Terrain extends THREE.Object3D
-  constructor: (geometry) ->
-    super()
-    @add(new THREE.Mesh(geometry, blockMaterial))
-
-  @fromLayout: (layout, legend) ->
-    geometry = new THREE.Geometry()
-    layout.forEach (row, z) -> row.forEach (id, x) ->
-      if id of legend
-        blockMesh.position.set(x, 0.5, z)
-        THREE.GeometryUtils.merge(geometry, blockMesh)
-    return new Terrain(geometry)
-
 class Block extends THREE.Object3D
+
   constructor: ->
     super()
     @add(new THREE.Mesh(blockGeometry, blockMaterial))
 
-exports.Terrain = Terrain
+  resetActions: ->
+  animate: (time, delta) ->
+
 exports.Block = Block

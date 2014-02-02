@@ -1,0 +1,26 @@
+{
+
+  "legend": {
+    "1": "wall",
+    "2": "empty",
+    "3": "wall",
+    "4": "record",
+    "5": "monkey",
+    "6": "goldrecord",
+    "7": "wall",
+    "8": "platinumrecord",
+    "9": "wall"
+  },
+
+  "steps": [{
+
+    "layout": [
+      ["1", "2", "3"],
+      ["4", "5", "6"],
+      ["7", "8", "9"]
+    ],
+
+    "actions": []
+
+  }]
+}
