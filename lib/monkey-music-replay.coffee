@@ -1,6 +1,4 @@
 THREE = require('three')
-Terrain = require('./objects/terrain.coffee').Terrain
-Monkey = require('./objects/monkey.coffee').Monkey
 items = require('./objects/items.coffee')
 
 assets = require('./assets.coffee')
