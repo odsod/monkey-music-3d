@@ -1,13 +1,8 @@
 THREE = require('three')
 
-objects = require('./objects/items.coffee')
-
 assets = require('./assets.coffee')
-
+objects = require('./objects/items.coffee')
 Engine = require('monkey-music-engine')
-replay = require('../levels/testlevel.replay.json')
-
-console.log(replay)
 
 STEP_TIME = 0.750
 
@@ -28,17 +23,6 @@ class MonkeyMusicReplay
     @renderer.setClearColor(0x0f1113)
     @renderer.setSize(window.innerWidth, window.innerHeight)
     @renderer.sortObjects = false
-
-    # Floor
-    #height = options.steps[0].layout.length
-    #width = options.steps[0].layout[0].length
-    #floorGeometry = new THREE.PlaneGeometry(width, height)
-    #floorMaterial = new THREE.MeshBasicMaterial({ color: 0x987654 })
-    #floor = new THREE.Mesh(floorGeometry, floorMaterial)
-    #floor.rotation.x = - Math.PI / 2
-    #floor.position.x = width / 2 - 0.5
-    #floor.position.z = height / 2 - 0.5
-    #@scene.add(floor)
 
     # Camera
     aspectRatio = window.innerWidth/ window.innerHeight
@@ -84,7 +68,10 @@ class MonkeyMusicReplay
     currStepNum = Math.floor(currTime / STEP_TIME)
     if currStepNum > @stepNum and currStepNum < @steps.length
       step = @steps[currStepNum]
-      console.log(step)
+      @engine.step(step)
+      @cleanRemovedObjectsFromScene()
+      @addNewObjectsToScene()
+      @updateObjectPositions()
       @stepNum = currStepNum
 
     @renderer.render(@scene, @camera)
