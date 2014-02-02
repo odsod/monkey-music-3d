@@ -6,11 +6,14 @@ requestAnimationFrame = require('./shim/request-animation-frame.js')
 replayFile = require('../levels/testlevel.replay.json')
 
 assets.whenLoaded ->
-  replay = new MonkeyMusicReplay(replayFile, stepTime: 1)
+  replay = new MonkeyMusicReplay(replayFile, stepTime: 1, autoStart: true)
   document.body.appendChild(replay.renderer.domElement)
+
+  window.addEventListener 'keyup', (e) -> if e.keyCode is 32
+    if replay.running then replay.stop() else replay.start()
 
   renderLoop = ->
     TWEEN.update()
-    replay.updateAndRender()
+    replay.update()
     requestAnimationFrame(renderLoop, replay.renderer.domElement)
   requestAnimationFrame(renderLoop, replay.renderer.domElement)

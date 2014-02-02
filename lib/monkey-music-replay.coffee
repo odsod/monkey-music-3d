@@ -9,7 +9,7 @@ STEP_TIME = 1.750
 class MonkeyMusicReplay
 
   constructor: (replay, options) ->
-    {@stepTime} = options
+    {@stepTime, @autoStart} = options
     @engine = new Engine(replay.level)
     @steps = replay.steps
 
@@ -18,6 +18,8 @@ class MonkeyMusicReplay
     @stepNum = -1
 
     @clock = new THREE.Clock()
+    @running = @autoStart
+
     @scene = new THREE.Scene()
 
     # Renderer
@@ -36,6 +38,15 @@ class MonkeyMusicReplay
     @cleanRemovedObjectsFromScene()
     @addNewObjectsToScene()
     @updateObjectPositions()
+    @renderer.render(@scene, @camera)
+
+  start: =>
+    @clock.start()
+    @running = true
+
+  stop: =>
+    @clock.stop()
+    @running = false
 
   addNewObjectsToScene: ->
     for row, y in @engine.ids
@@ -63,15 +74,12 @@ class MonkeyMusicReplay
         if id of @objectsOnScene
           @objectsOnScene[id].position.set(x, 0, y)
 
-  updateAndRender: =>
+  update: => if @running
     currDelta = @clock.getDelta()
     currTime = @clock.getElapsedTime()
 
-    currTick = Math.floor(currTime / @stepTime)
-    if currTick > @tick
-      @tick = currTick
+    currStepNum = Math.floor(currTime / @stepTime) - 1
 
-    currStepNum = Math.floor(currTime / @stepTime)
     if currStepNum > @stepNum and currStepNum < @steps.length
       step = @steps[currStepNum]
       @engine.step(step)
