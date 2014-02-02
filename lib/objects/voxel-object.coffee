@@ -17,22 +17,21 @@ createVoxelMaterial = (image) ->
 
 createVoxelGeometry = (image, material) ->
   imageData = getImageData(image)
-
   geometry = new THREE.Geometry()
-
   for x in [0..image.width - 1]
     for y in [0..image.height - 1]
       i = (y * image.width + x) * 4
       alpha = imageData[i + 3]
       continue if alpha == 0
       voxel = new THREE.CubeGeometry(1, 1, 1)
+      currPixel = { x: x, y: y, width: 1, height: 1 }
       voxel.faceVertexUvs[0] = uvMapForCubeTexture
-        right:  { x: x, y: y, width: 1, height: 1 }
-        front:  { x: x, y: y, width: 1, height: 1 }
-        left:   { x: x, y: y, width: 1, height: 1 }
-        back:   { x: x, y: y, width: 1, height: 1 }
-        top:    { x: x, y: y, width: 1, height: 1 }
-        bottom: { x: x, y: y, width: 1, height: 1 }
+        right:  currPixel
+        front:  currPixel
+        left:   currPixel
+        back:   currPixel
+        top:    currPixel
+        bottom: currPixel
         textureWidth: image.width,
         textureHeight: image.height
       mesh = new THREE.Mesh(voxel, material)
@@ -40,27 +39,23 @@ createVoxelGeometry = (image, material) ->
       THREE.GeometryUtils.merge(geometry, mesh)
   geometry
 
-materialCache = {}
-geometryCache = {}
+cache = {}
 
 class ImageVoxelObject extends THREE.Object3D
 
   constructor: (image) ->
     super()
 
-    unless image.src of materialCache
-      materialCache[image.src] = createVoxelMaterial(image)
-    material = materialCache[image.src]
-
-    unless image.src of geometryCache
-      geometryCache[image.src] = createVoxelGeometry(image, material)
-    geometry = geometryCache[image.src]
+    {material, geometry} = cache[image.src] if image.src of cache
+    unless material? and geometry?
+      material = createVoxelMaterial(image)
+      geometry = createVoxelGeometry(image, material)
+      cache[image.src] = { material: material, geometry: geometry }
 
     @add(new THREE.Mesh(geometry, material))
     @scale.setLength(1 / image.width * 1.70)
 
   resetActions: ->
-
   animate: (time, delta) => @rotation.y = time + (Math.PI / 3) * @id
 
 exports.VoxelObject = ImageVoxelObject
