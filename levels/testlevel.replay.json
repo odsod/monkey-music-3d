@@ -19,7 +19,7 @@
       "stepLimit": 20
     }
   },
-  "moves": [{
+  "steps": [{
     "player": "1",
     "direction": "N"
   }, {

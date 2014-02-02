@@ -13,11 +13,12 @@ STEP_TIME = 0.750
 
 class MonkeyMusicReplay
 
-  constructor: (options) ->
-    @replay = replay
+  constructor: (replay) ->
     @engine = new Engine(replay.level)
-    {@steps, @legend} = options
+    @steps = replay.steps
+
     @objectsOnScene = {}
+    @stepNum = -1
 
     @clock = new THREE.Clock()
     @scene = new THREE.Scene()
@@ -79,7 +80,13 @@ class MonkeyMusicReplay
   updateAndRender: =>
     currDelta = @clock.getDelta()
     currTime = @clock.getElapsedTime()
+
     currStepNum = Math.floor(currTime / STEP_TIME)
+    if currStepNum > @stepNum and currStepNum < @steps.length
+      step = @steps[currStepNum]
+      console.log(step)
+      @stepNum = currStepNum
+
     @renderer.render(@scene, @camera)
 
 exports.MonkeyMusicReplay = MonkeyMusicReplay
