@@ -11,33 +11,35 @@ class MonkeyMusicReplay
 
   constructor: (options) ->
     {@steps, @legend} = options
-    aspectRatio = window.innerWidth/ window.innerHeight
-    @camera = new THREE.PerspectiveCamera(70, aspectRatio, 0.1, 1500)
-    @clock = new THREE.Clock()
-    @renderer = new THREE.WebGLRenderer()
-    @scene = new THREE.Scene()
-    @entitiesOnScene = {}
-    @init()
+    @objectsOnScene = {}
 
-  init: =>
-    @initStep(0)
+    @clock = new THREE.Clock()
+    @scene = new THREE.Scene()
+
+    # Renderer
+    @renderer = new THREE.WebGLRenderer()
     @renderer.setClearColor(0x0f1113)
     @renderer.setSize(window.innerWidth, window.innerHeight)
     @renderer.sortObjects = false
-    @camera.position.set(4.5, 5, 7 + 1)
-    @camera.lookAt(new THREE.Vector3(4.5, 0, 3.5))
 
     # Floor
-    floorGeometry = new THREE.PlaneGeometry(10, 7)
+    height = options.steps[0].layout.length
+    width = options.steps[0].layout[0].length
+    floorGeometry = new THREE.PlaneGeometry(width, height)
     floorMaterial = new THREE.MeshBasicMaterial({ color: 0x987654 })
     floor = new THREE.Mesh(floorGeometry, floorMaterial)
     floor.rotation.x = - Math.PI / 2
-    floor.position.x = 4.5
-    floor.position.z = 3
+    floor.position.x = width / 2 - 0.5
+    floor.position.z = height / 2 - 0.5
     @scene.add(floor)
 
-    #terrain = Terrain.fromLayout(@steps[0].layout, @legend.terrain)
-    #@scene.add(terrain)
+    # Camera
+    aspectRatio = window.innerWidth/ window.innerHeight
+    @camera = new THREE.PerspectiveCamera(70, aspectRatio, 0.1, 1500)
+    @camera.position.set(width / 2 - 0.5, 5, height - 0.5 + height * 0.75)
+    @camera.lookAt(new THREE.Vector3(width / 2 - 0.5, 0, height / 2 - 0.5))
+
+    @initStep(0)
 
   shouldBeOnScene: (thing) -> switch thing
     when 'empty' then no
@@ -45,44 +47,49 @@ class MonkeyMusicReplay
 
   initStep: (@stepNum) =>
     {layout, actions} = @steps[@stepNum]
+
     entitiesUpdated = {}
+
     layout.forEach (row, z) => row.forEach (id, x) =>
       entity = @legend[id]
       if entity? and @shouldBeOnScene(entity)
 
         # Mark entity as updated
         entitiesUpdated[id] = true
-        entityOnScene = @entitiesOnScene[id]
+        entityOnScene = @objectsOnScene[id]
 
         if not entityOnScene?
-          entityOnScene = @entitiesOnScene[id] =
+          entityOnScene = @objectsOnScene[id] =
             items.voxelObjectFor entity,
               id: id
-              entities: @entitiesOnScene
+              entities: @objectsOnScene
               stepTime: STEP_TIME
           @scene.add(entityOnScene)
 
         if (entityOnScene.position.x != x) or (entityOnScene.position.z != z)
           entityOnScene.position.set(x, 0, z)
 
-    for id, entity of @entitiesOnScene
+    for id, entity of @objectsOnScene
       if not entitiesUpdated[id]?
         @scene.remove(entity)
-        delete @entitiesOnScene[id]
+        delete @objectsOnScene[id]
 
-    for id, entity of @entitiesOnScene
+    for id, entity of @objectsOnScene
       console.log(id, entity)
       entity.resetActions()
-    @entitiesOnScene[action.id].performAction(action) for action in actions
+    @objectsOnScene[action.id].performAction(action) for action in actions
 
   updateAndRender: =>
     currDelta = @clock.getDelta()
     currTime = @clock.getElapsedTime()
     currStepNum = Math.floor(currTime / STEP_TIME)
+
     if currStepNum > @stepNum and currStepNum < @steps.length
       @initStep(currStepNum)
-    for id, entity of @entitiesOnScene
+
+    for id, entity of @objectsOnScene
       entity.animate(currTime, currDelta)
+
     @renderer.render(@scene, @camera)
 
 exports.MonkeyMusicReplay = MonkeyMusicReplay
