@@ -54,7 +54,7 @@ class MonkeyMusicReplay
             items.voxelObjectFor @legend.entities[id],
               id: id
               entities: @entitiesOnScene
-              stepTime: @STEP_TIME
+              stepTime: STEP_TIME
           @scene.add(entityOnScene)
 
         if (entityOnScene.position.x != x) or (entityOnScene.position.z != z)

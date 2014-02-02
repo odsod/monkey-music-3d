@@ -36,4 +36,10 @@ class Terrain extends THREE.Object3D
         THREE.GeometryUtils.merge(geometry, blockMesh)
     return new Terrain(geometry)
 
+class Block extends THREE.Object3D
+  constructor: ->
+    super()
+    @add(new THREE.Mesh(blockGeometry, blockMaterial))
+
 exports.Terrain = Terrain
+exports.Block = Block
