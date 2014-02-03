@@ -167,7 +167,7 @@ class Monkey extends THREE.Object3D
     @scale.setLength(1 / metrics.width * 1.10)
 
   animate: (time, delta) ->
-    speed = 0.75 / @stepTime
+    speed = 0.60 / @stepTime
     unless @rightArm.tween?
       @rightArm.rotation.z = Math.PI / 2
       @rightArm.rotation.z = Math.cos(speed * 0.6662 * time * 20 + Math.PI)
@@ -205,7 +205,10 @@ class Monkey extends THREE.Object3D
 
   move: (to) =>
     {x, y} = to
-    new Tween(@position).to({x: x, z: y}, @stepTime * 1000).start()
+    animationTime = @stepTime * 1000
+    new Tween(@position)
+      .to({x: x, z: y}, animationTime)
+      .start()
 
   turnTo: (direction) =>
     rotation = switch direction
