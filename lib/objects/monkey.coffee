@@ -1,4 +1,5 @@
 THREE = require('three')
+TWEEN = require('tween')
 Tween = require('tween').Tween
 uvMapForCubeTexture = require('../util.coffee').uvMapForCubeTexture
 assets = require('../assets.coffee')
@@ -190,12 +191,15 @@ class Monkey extends THREE.Object3D
         delete part.tween
 
   pickup: () =>
+    delayTime = @stepTime * 1000 / 6
     animationTime = @stepTime * 1000 / 4
-    for arm in [@rightArm, @leftArm]
-      arm.tween.stop() if arm.tween?
-      arm.tween = new Tween(arm.rotation)
-        .to(z: Math.PI / 4, x: 0, animationTime)
-        .start()
+    setTimeout =>
+      for arm in [@rightArm, @leftArm]
+        arm.tween?.stop()
+        arm.tween = new Tween(arm.rotation)
+          .to(z: Math.PI / 4, x: 0, animationTime)
+        arm.tween.start()
+    , delayTime
 
   setStepTime: (@stepTime) ->
 
@@ -209,7 +213,10 @@ class Monkey extends THREE.Object3D
       when 'S' then 3 / 2 * Math.PI
       when 'W' then Math.PI
       when 'E' then 0
-    animationTime = @stepTime * 1000 / 2
-    new Tween(@rotation).to(y: rotation, animationTime).start()
+    animationTime = @stepTime * 1000 / 1.1
+    new Tween(@rotation)
+      .to(y: rotation, animationTime)
+      .easing(TWEEN.Easing.Quadratic.Out)
+      .start()
 
 exports.Monkey = Monkey
