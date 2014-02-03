@@ -10,7 +10,7 @@ for name, texture of textures
   texture.needsUpdate = true
 
 blockMaterial = new THREE.MeshBasicMaterial(map: textures.blocksmall)
-blockGeometry = new THREE.CubeGeometry(1, 0.75, 1)
+blockGeometry = new THREE.CubeGeometry(1, 0.60, 1)
 blockGeometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0.5, 0))
 blockGeometry.faceVertexUvs[0] = uvMapForCubeTexture
   right:  { x: 0, y: 8, width: 8, height: 8 }

@@ -126,10 +126,9 @@ geometries.head.faceVertexUvs[0] = uvMapForCubeTexture
   textureHeight: 32
 
 class Monkey extends THREE.Object3D
-  constructor: ->
+  constructor: (options) ->
     super()
-
-    @tweens = []
+    {@stepTime} = options
 
     @parts =
       head:     new THREE.Mesh(geometries.head, materials.monkey)
@@ -167,20 +166,22 @@ class Monkey extends THREE.Object3D
     @scale.setLength(1 / metrics.width * 1.10)
 
   animate: (time, delta) ->
+    speed = 0.75 / @stepTime
     unless @rightArm.tween?
       @rightArm.rotation.z = Math.PI / 2
-      @rightArm.rotation.z = 1.0 * Math.cos(0.6662 * time * 20 + Math.PI)
-      @rightArm.rotation.x = 0.5 * (Math.cos(0.2812 * time * 20) - 1)
+      @rightArm.rotation.z = Math.cos(speed * 0.6662 * time * 20 + Math.PI)
+      @rightArm.rotation.x = 0.5 * (Math.cos(speed * 0.2812 * time * 20) - 1)
     unless @leftArm.tween?
       @leftArm.rotation.z = Math.PI / 2
-      @leftArm.rotation.z = 1.0 * Math.cos(0.6662 * time * 20)
-      @leftArm.rotation.x = 0.5 * (Math.cos(0.2312 * time * 20) + 1)
-    @rightLeg.rotation.z = 1.0 * Math.cos(0.6662 * time * 20)
-    @leftLeg.rotation.z = 1.0 * Math.cos(0.6662 * time * 20 + Math.PI)
+      @leftArm.rotation.z = Math.cos(speed * 0.6662 * time * 20)
+      @leftArm.rotation.x = 0.5 * (Math.cos(speed * 0.2312 * time * 20) + 1)
+    @rightLeg.rotation.z = Math.cos(speed * 0.6662 * time * 20)
+    @leftLeg.rotation.z = Math.cos(speed * 0.6662 * time * 20 + Math.PI)
 
   performAnimation: (animation) => switch animation.type
     when 'turn' then @turnTo(animation.direction)
     when 'pickup' then @pickup()
+    when 'move' then @move(animation.to)
 
   resetAnimations: =>
     for name, part of @parts
@@ -189,14 +190,18 @@ class Monkey extends THREE.Object3D
         delete part.tween
 
   pickup: () =>
+    animationTime = @stepTime * 1000 / 4
     for arm in [@rightArm, @leftArm]
       arm.tween.stop() if arm.tween?
-      arm.tween = new Tween(arm.rotation).to(z: Math.PI / 2, x: 0, 200).start()
+      arm.tween = new Tween(arm.rotation)
+        .to(z: Math.PI / 4, x: 0, animationTime)
+        .start()
 
-  move: (options) =>
-    @animation = 'running'
-    {to: {x, y}} = options
-    new Tween(@position).to({x: x, z: y}, 750).start()
+  setStepTime: (@stepTime) ->
+
+  move: (to) =>
+    {x, y} = to
+    new Tween(@position).to({x: x, z: y}, @stepTime * 1000).start()
 
   turnTo: (direction) =>
     rotation = switch direction
@@ -204,6 +209,7 @@ class Monkey extends THREE.Object3D
       when 'S' then 3 / 2 * Math.PI
       when 'W' then Math.PI
       when 'E' then 0
-    @tweens.push(new Tween(@rotation).to(y: rotation, 250).start())
+    animationTime = @stepTime * 1000 / 2
+    new Tween(@rotation).to(y: rotation, animationTime).start()
 
 exports.Monkey = Monkey

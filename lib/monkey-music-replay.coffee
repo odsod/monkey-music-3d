@@ -4,8 +4,6 @@ assets = require('./assets.coffee')
 objects = require('./objects/items.coffee')
 Engine = require('monkey-music-engine')
 
-STEP_TIME = 1.750
-
 class MonkeyMusicReplay
 
   constructor: (replay, options) ->
@@ -48,13 +46,16 @@ class MonkeyMusicReplay
     @clock.stop()
     @running = false
 
+  setStepTime: (@stepTime) =>
+    object.setStepTime?(@stepTime) for id, object of @objectsOnScene
+
   addNewObjectsToScene: ->
     for row, y in @engine.ids
       for id, x in row
         unless id of @objectsOnScene
           objectType = @engine.idLookup[id]
           if objects.canCreate(objectType)
-            object = objects.create(objectType)
+            object = objects.create(objectType, stepTime: @stepTime)
             @scene.add(object)
             @objectsOnScene[id] = object
 
@@ -84,7 +85,7 @@ class MonkeyMusicReplay
     if currStepNum > @stepNum
       @stepNum = currStepNum
 
-      # Snap to current state (animations have completed)
+      # Snap to current state (animations should have brought us here)
       @cleanRemovedObjectsFromScene()
       @addNewObjectsToScene()
       @updateObjectPositions()
@@ -95,19 +96,17 @@ class MonkeyMusicReplay
         # Animate the transition to the next step
         step = @steps[currStepNum]
 
-        for id, object of @objectsOnScene
-          object.resetAnimations() if object.resetAnimations?
+        object.resetAnimations?() for id, object of @objectsOnScene
 
         for animation in @engine.animationsForStep(step)
-          if animation.type is 'turn' or animation.type is 'pickup'
-            @objectsOnScene[animation.id].performAnimation(animation)
+          @objectsOnScene[animation.id].performAnimation(animation)
 
         # Move to next step
         @engine.step(step)
 
     # Perform ongoing animations
     for id, object of @objectsOnScene
-      object.animate(currTime, currDelta) if object.animate?
+      object.animate?(currTime, currDelta)
 
     @renderer.render(@scene, @camera)
 
