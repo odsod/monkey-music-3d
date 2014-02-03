@@ -222,4 +222,4 @@ class Monkey extends THREE.Object3D
       .easing(TWEEN.Easing.Quadratic.Out)
       .start()
 
-exports.Monkey = Monkey
+module.exports = Monkey

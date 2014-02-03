@@ -23,12 +23,8 @@ blockGeometry.faceVertexUvs[0] = uvMapForCubeTexture
   textureHeight: 16
 
 class Block extends THREE.Object3D
-
   constructor: ->
     super()
     @add(new THREE.Mesh(blockGeometry, blockMaterial))
 
-  resetActions: ->
-  animate: (time, delta) ->
-
-exports.Block = Block
+module.exports = Block

@@ -58,4 +58,4 @@ class ImageVoxelObject extends THREE.Object3D
   resetActions: ->
   animate: (time, delta) => @rotation.y = time + (Math.PI / 3) * @id
 
-exports.VoxelObject = ImageVoxelObject
+module.exports = ImageVoxelObject

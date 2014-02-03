@@ -1,8 +1,7 @@
 THREE = require('three')
 
 assets = require('./assets.coffee')
-objects = require('./objects/items.coffee')
-Engine = require('monkey-music-engine')
+objectFactory = require('./objects/factory.coffee')
 
 class MonkeyMusicReplay
 
@@ -54,8 +53,8 @@ class MonkeyMusicReplay
       for id, x in row
         unless id of @objectsOnScene
           objectType = @engine.idLookup[id]
-          if objects.canCreate(objectType)
-            object = objects.create(objectType, stepTime: @stepTime)
+          if objectFactory.canCreate(objectType)
+            object = objectFactory.create(objectType, stepTime: @stepTime)
             @scene.add(object)
             @objectsOnScene[id] = object
 
