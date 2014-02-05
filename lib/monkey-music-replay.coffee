@@ -1,5 +1,6 @@
 THREE = require('three')
 
+Engine = require('monkey-music-engine')
 assets = require('./assets.coffee')
 objectFactory = require('./objects/factory.coffee')
 
@@ -7,6 +8,8 @@ class MonkeyMusicReplay
 
   constructor: (replay, options) ->
     {@stepTime, @autoStart} = options
+    @running = @autoStart
+
     @engine = new Engine(replay.level)
     @steps = replay.steps
 
@@ -15,8 +18,6 @@ class MonkeyMusicReplay
     @stepNum = -1
 
     @clock = new THREE.Clock()
-    @running = @autoStart
-
     @scene = new THREE.Scene()
 
     # Renderer
